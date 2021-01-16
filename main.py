@@ -344,8 +344,7 @@ while True:
         print('-'.center(107, '-'))
 
 
-# Game
-
+# Game prep, remove while loop and break when done
 
 # Creates {number_of_players} amount of players
 player = {}
@@ -367,16 +366,19 @@ for n in range(number_of_players):
         else:
             print('That was not a valid input, please try again.')
     player[n+1].wallet = gamble_start_value
-
-print(player)
-
+    # print(player)
+    # print(player[1])
 
 # Deck creation
 deck_of_cards = ('A', '2', '3', '4', '5', '6', '7', '8', '9', 'J', 'Q', 'K')
-dealers_deck = list(deck_of_cards)*4*decks
+dealers_deck_default = list(deck_of_cards)*4*decks
+dealers_deck = dealers_deck_default
 
-# Player creation
+# Rounds loop
+while not current_round >= targeted_round:
+    pass
 
+print(f'Final score: Player 1 ${player[1].wallet:,}{f", Player 2 ${player[2].wallet:,}" if number_of_players >= 2 else ""}{f", Player 3 ${player[3].wallet:,}" if number_of_players >= 3 else ""}{f", Player 4 ${player[4].wallet:,}" if number_of_players >= 4 else ""}{f", Player 5 ${player[5].wallet:,}" if number_of_players >= 5 else ""}{f", Player 6 ${player[6].wallet:,}" if number_of_players >= 6 else ""}{f", Player 7 ${player[7].wallet:,}" if number_of_players >= 7 else ""}')
 
 print('Thanks for playing. See you soon.')
 
