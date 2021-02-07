@@ -886,8 +886,23 @@ while targeted_round == 0 or current_round != targeted_round:
                                 print(
                                     f'Dealer: Ok {player[n].name}, your score is {player[n].hand_value}.')
                                 break
-                            elif player_input == 'dd':
-                                pass  # WIP
+                            elif cvar.player_input == 'dd':
+                                while True:
+                                    cvar.player_input = input(f'Dealer: Just to confirm {cvar.player[n].name}, you want to bet ${cvar.player[n].bet:,} to duble down correct? [Y/N]:').strip().casefold()
+                                    cfunc.check_if_player_quits(cvar.player_input)
+                                    if cvar.player_input == 'y':
+                                        print(f'Dealer: Alright {cvar.player[n].name}, good luck on your bet.')
+                                        cvar.player[n].posible_moves.remove('dd')
+                                        if 'spl' in cvar.player[n].posible_moves:
+                                            cvar.player[n].posible_moves.remove('spl')
+                                        cvar.player[n].wallet -= cvar.player[n].bet
+                                        cvar.player[n].double_down[h] == True
+                                        break
+                                    elif cvar.player_input == 'n':
+                                        print('Dealer: Ok, what would you like to do then?')
+                                        break
+                                    else:
+                                        print('Dealer: I didn\'t get that.)
                             elif player_input == 'spl':
                                 pass  # WIP
                             elif player_input == 'ttd':
