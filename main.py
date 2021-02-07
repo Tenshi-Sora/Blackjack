@@ -4,8 +4,6 @@ from time import sleep
 # Custom Functions
 
 # Prints the help text
-
-
 def print_help():
     while True:
         print('-'.center(108, '-'))
