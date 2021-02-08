@@ -2,7 +2,6 @@ import random
 from time import sleep
 
 # Custom Functions
-
 # Prints the help text
 def print_help():
     while True:
@@ -126,31 +125,31 @@ def player_draw(hand_numb):
     for n in range(number_of_players):
         if player[n+1].leave == False and player[n+1].skip == False:
             player[n +
-                   1].hand[hand_numb].append(random.choice(dealer.deck))
+                        1].hand[hand_numb].append(random.choice(dealer.deck))
             dealer.deck.remove(player[n+1].hand[hand_numb][-1])
 
 
 # Adds the last card's value to the hand_value of the specific player/dealer
 def determine_hand_value(player, hand):
-    if hand == []:
-        return
-    elif hand[-1] in ['2', '3', '4', '5', '6', '7', '8', '9', '10']:
-        player.hand_value += int(hand[-1])
-    elif hand[-1] in ['J(10)', 'Q(10)', 'K(10)']:
-        player.hand_value += 10
-    else:
-        player.hand_value += 11
-
-
-# Checks if the value is over 21 and if so, checks if there is an ace to lower to 1
-def check_ace_value(player, player_hand):
-    if player.hand_value > 21:
-        while player.hand_value > 21:
-            if any(card in player.hand for card in ['A(11)']):
-                player.hand_value -= 10
-                player_hand[player.hand.index('A(11)')] = 'A(1)'
-            else:
-                break
+    player.hand_value = 0
+    for card in hand:
+        if hand == []:
+            return
+        elif card in ['A(1)']:
+            player.hand_value += 1
+        elif card in ['2', '3', '4', '5', '6', '7', '8', '9', '10']:
+            player.hand_value += int(card)
+        elif card in ['J(10)', 'Q(10)', 'K(10)']:
+            player.hand_value += 10
+        else:
+            player.hand_value += 11
+    while player.hand_value > 21:
+        if any(card in player.hand for card in ['A(11)']):
+            player.hand_value -= 10
+            player_hand[player.hand.index('A(11)')] = 'A(1)'
+        else:
+            break
+    return
 
 
 # Checks what the player can do
@@ -165,8 +164,6 @@ def check_player_moves(player_numb, hand_numb):
     player[player_numb].posible_moves.extend(['[ttd]', '[ftt]'])
 
 # Custom Variables
-
-
 # Whatever the player inputs
 player_input = None
 
@@ -788,7 +785,7 @@ while targeted_round == 0 or current_round != targeted_round:
                                 if player_input == 'y':
                                     player[n].insurence = True
                                     player[n +
-                                           1].wallet -= int(player[n].bet/2)
+                                                1].wallet -= int(player[n].bet/2)
                                     print(
                                         'Dealer: You are now insured agenst a Blackjack.')
                                     break
@@ -804,7 +801,7 @@ while targeted_round == 0 or current_round != targeted_round:
                         if player_input == 'y':
                             player[n].insurence = True
                             player[n +
-                                   1].wallet -= int(player[n].bet/2)
+                                        1].wallet -= int(player[n].bet/2)
                             print('Dealer: You are now insured agenst a Blackjack.')
                             break
                         elif player_input == 'n':
@@ -833,7 +830,7 @@ while targeted_round == 0 or current_round != targeted_round:
                     print(
                         f'Dealer: {player[n].name} did have insurence so you get ${(player[n].bet+(player[n].bet/2)):,} back.')
                     player[n].wallet += player[n +
-                                               1].bet+(player[n].bet/2)
+                                                         1].bet+(player[n].bet/2)
                 else:
                     print(
                         f'Dealer: {player[n].name} did not have insurence so you lose your ${player[n].bet:,} bet.')
@@ -850,12 +847,14 @@ while targeted_round == 0 or current_round != targeted_round:
         for n in range(number_of_players):
             for h in range(4):
                 determine_hand_value(
-                    player[n], player[n].hand[h]) if h != 0 else ''
+                    dplayer[n], player[n].hand[h])
+                if h == 3 and 'spl' in player[n].posible_moves:
+                    player[n].posible_moves.remove('spl')
                 if player[n].split == True or h == 0:
                     player[n].split = False
                     while True:
                         print(f'Dealer cards: {dealer.hand[0]}, ?')
-                        print(f'{player[n].name} cards: {player[n].hand[h]} = {player[n].hand_value}'.replace(
+                        print(f'{player[n].name} cards: {player[n].hand[h]} = {player[n].hand_value}{" (dobaling down)" if player[n].double_down[h] else ""}'.replace(
                             '[', '').replace('\'', '').replace(']', ''))
                         print(
                             f'Posible moves: {player[n].posible_moves}'.replace('\'', ''))
@@ -886,23 +885,29 @@ while targeted_round == 0 or current_round != targeted_round:
                                 print(
                                     f'Dealer: Ok {player[n].name}, your score is {player[n].hand_value}.')
                                 break
-                            elif cvar.player_input == 'dd':
+                            elif player_input == 'dd':
                                 while True:
-                                    cvar.player_input = input(f'Dealer: Just to confirm {cvar.player[n].name}, you want to bet ${cvar.player[n].bet:,} to duble down correct? [Y/N]:').strip().casefold()
-                                    cfunc.check_if_player_quits(cvar.player_input)
-                                    if cvar.player_input == 'y':
-                                        print(f'Dealer: Alright {cvar.player[n].name}, good luck on your bet.')
-                                        cvar.player[n].posible_moves.remove('dd')
-                                        if 'spl' in cvar.player[n].posible_moves:
-                                            cvar.player[n].posible_moves.remove('spl')
-                                        cvar.player[n].wallet -= cvar.player[n].bet
-                                        cvar.player[n].double_down[h] == True
+                                    player_input = input(
+                                        f'Dealer: Just to confirm {player[n].name}, you want to bet ${player[n].bet:,} to duble down correct? [Y/N]:').strip().casefold()
+                                    check_if_player_quits(
+                                        player_input)
+                                    if player_input == 'y':
+                                        print(
+                                            f'Dealer: Alright {player[n].name}, good luck on your bet.')
+                                        player[n].posible_moves.remove(
+                                            'dd')
+                                        if 'spl' in player[n].posible_moves:
+                                            player[n].posible_moves.remove(
+                                                'spl')
+                                        player[n].wallet -= player[n].bet
+                                        player[n].double_down[h] == True
                                         break
-                                    elif cvar.player_input == 'n':
-                                        print('Dealer: Ok, what would you like to do then?')
+                                    elif player_input == 'n':
+                                        print(
+                                            'Dealer: Ok, what would you like to do then?')
                                         break
                                     else:
-                                        print('Dealer: I didn\'t get that.)
+                                        print('Dealer: I didn\'t get that.')
                             elif player_input == 'spl':
                                 pass  # WIP
                             elif player_input == 'ttd':
@@ -946,8 +951,6 @@ while targeted_round == 0 or current_round != targeted_round:
                             else:
                                 print(
                                     'Dealer: That was not a valid move, try again.\n')
-                        pass
-                        # if player splits (aka split == True), reset repeat, hand value, posible moves, and reapeat above upto 3 more times
         print('Dealer: Now that everyone has gone, its my turn')
         while dealer.hand_value < 17:  # Dealer's turn
             print('Dealer\'s cards: ', end='')
@@ -955,7 +958,6 @@ while targeted_round == 0 or current_round != targeted_round:
             print(f' = {dealer.hand_value}')
             dealer_draw()
             determine_hand_value(dealer, dealer.hand)
-            check_ace_value(dealer, dealer.hand)
             if dealer.hand_value >= 17:
                 print('Dealer\'s cards: ', end='')
                 print(*dealer.hand, sep=', ', end='')
@@ -1016,7 +1018,10 @@ while targeted_round == 0 or current_round != targeted_round:
         player[n].posible_moves = []
         player[n].hit = False
         player[n].stay = False
-        player[n].double_down = False
+        player[n].double_down[0] = False
+        player[n].double_down[1] = False
+        player[n].double_down[2] = False
+        player[n].double_down[3] = False
         player[n].split = False
         player[n].insurence = False
         player[n].tip_the_dealer = False
